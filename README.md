@@ -19,7 +19,16 @@ $ python3 -m venv venv
 # Activate the venv
 $ source venv/bin/activate
 
+# Install the requirements
+$ pip install fastapi uvicorn yt-dlp jinja2 python-multipart
+
+
 # To run the script
+$ python3 main.py
+$ sudo apt update
+$ sudo apt install ffmpeg
+
+# Run the Script
 $ python3 main.py
 
 # to deactivate the venv

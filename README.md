@@ -1,52 +1,90 @@
-# music-downloader.service file is used to create a service in the path: /etc/systemd/system folder which will help to automatically run the web app at startup.
+# YT Music Downloader
 
-#main.py is the backend code to download songs.
-# index.html & static folder creates the frontend web page
-# in the downloades folder, songs are getting downloaded. 
+A small FastAPI web app that downloads audio from YouTube links (single songs or
+playlists) and serves them as 192 kbps MP3s with proper ID3 metadata and
+embedded cover art.
 
-# to use it, first setup venv for python & then activate the venv and run the python script; Python3 main.py 
+Designed for deployment on a **remote server**: every download is fetched,
+tagged, and **streamed straight back to the requesting browser**. Nothing is
+persisted on the host — `/tmp` is mounted as `tmpfs` (RAM) inside the container
+and each job's work directory is deleted the moment the response completes.
+The final MP3 lands in your browser's default download folder on your local
+machine.
 
-***********************************************
-# Go to the music downloader app folder
-$ cd /path/to/app/folder
+## How metadata works
 
-# Install the venv for python3
-$ sudo apt install python3.12-venv
+yt-dlp only gives you the YouTube title and uploader, which is rarely correct.
+For every track we:
 
-# Create the venv in the application folder
-$ python3 -m venv venv
+1. Parse the YouTube title to guess `(artist, song)`.
+2. Query the iTunes Search API for the canonical track.
+3. Download 600×600 cover art from iTunes (or fall back to the embedded
+   thumbnail).
+4. Write ID3v2.3 tags: title, artist, album, album artist, year, genre,
+   track number, disc number, and cover art.
 
-# Activate the venv
-$ source venv/bin/activate
+## Project layout
 
-# Install the requirements
-$ pip install fastapi uvicorn yt-dlp jinja2 python-multipart
+- `main.py` – FastAPI backend, Server-Sent Events progress, metadata enrichment.
+- `index.html` + `static/` – the web UI (glassmorphism + animated background).
+- `Dockerfile` – builds the production image (Python 3.12, FFmpeg, yt-dlp).
+- `docker-compose.yml` – one-command deployment; mounts `/tmp` as `tmpfs`.
+- `music-downloader.service` – optional systemd unit for bare-metal installs.
 
+## Run with Docker (recommended)
 
-# To run the script
-$ python3 main.py
-$ sudo apt update
-$ sudo apt install ffmpeg
+Prerequisites: Docker 20+ and Docker Compose v2.
 
-# Run the Script
-$ python3 main.py
+```bash
+git clone https://github.com/saurit987/YT-music-downloader.git
+cd YT-music-downloader
+docker compose up -d --build
+```
 
-# to deactivate the venv
-$ deactivate 
-*************************************************
-# To make it capable to for startup run:
-# Move the music-downloader.service file in below path
+The app will be available on <http://localhost:8000>. To expose it behind a
+reverse proxy or run it on a public host, just point nginx/Caddy at port 8000
+inside the container.
 
-$ /etc/systemd/system
+To follow logs:
 
-# reaload deamon:
-$ sudo systemctl deamon-reload
+```bash
+docker compose logs -f
+```
 
-# enable the service
-$ sudo systemctl enable music-downloader.service
+To stop / remove:
 
-# Start the service
-$ sudo systemctl start music-downloader.service
+```bash
+docker compose down
+```
 
-# Reboot the system
-$ sudo reboot
+### Plain `docker run`
+
+```bash
+docker build -t yt-music-downloader .
+docker run -d --name yt-music-downloader \
+    -p 8000:8000 \
+    --tmpfs /tmp:size=256m,mode=1777 \
+    yt-music-downloader
+```
+
+## Run without Docker (legacy / Raspberry Pi)
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-venv ffmpeg
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 main.py
+```
+
+The server listens on `0.0.0.0:8000`.
+
+### systemd autostart
+
+Copy `music-downloader.service` to `/etc/systemd/system/`, then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now music-downloader.service
+```

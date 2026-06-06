@@ -3,65 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Music Downloader</title>
+    <meta name="description" content="Download YouTube music as properly tagged MP3s with cover art, album info, and rich metadata.">
+    <title>YT Music Downloader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="aurora">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
 
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark/Light Mode">
-        <svg id="sun-icon" class="icon sun-icon" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-        <svg id="moon-icon" class="icon moon-icon" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-    </button>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">YT Music</span>
+                <span class="brand-tag">Downloader</span>
+            </div>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+            <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>
+            <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+    </header>
 
-    <div class="card-container">
-        
-        <header class="card-header">
-            <h1 class="header-title">Music Downloader</h1>
-            <p class="header-subtitle">YT Music &bull; High Quality MP3</p>
-        </header>
+    <main class="stage">
+        <section class="hero">
+            <span class="eyebrow">Fast &middot; Tagged &middot; Lossless Cover Art</span>
+            <h1 class="hero-title">Save any track as a <span class="grad-text">perfectly tagged</span> MP3.</h1>
+            <p class="hero-sub">Paste a YouTube link and we'll fetch the audio, pull the real title, artist, album, year and genre from iTunes, embed a 600x600 cover, and hand you back a clean MP3.</p>
+        </section>
 
-        <div class="card-body">
-            <form id="download-form" class="form-group">
-                
-                <label for="url" class="form-label">Music URL</label>
-                <input type="text" id="url" name="url" placeholder="Paste link here..." required class="input-field">
+        <section class="card glass" id="card">
+            <form id="download-form" class="form" autocomplete="off" novalidate>
+                <div class="field">
+                    <label for="url" class="label">Music URL</label>
+                    <div class="input-wrap">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        <input type="text" id="url" name="url"
+                               placeholder="https://www.youtube.com/watch?v=..." required>
+                    </div>
+                </div>
 
-                <div class="download-type-group">
-                    <label class="form-label">Download Type</label>
-                    <div class="toggle-group">
-                        <label class="toggle-option">
-                            <input type="radio" name="type" value="single" checked>
-                            <span class="toggle-label">Single Song</span>
+                <div class="field">
+                    <span class="label">Download Type</span>
+                    <div class="segmented" role="tablist">
+                        <input type="radio" id="type-single" name="type" value="single" checked>
+                        <label for="type-single" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                            Single Song
                         </label>
-                        <label class="toggle-option">
-                            <input type="radio" name="type" value="playlist">
-                            <span class="toggle-label">Playlist (Blocked for Direct Download)</span>
+                        <input type="radio" id="type-playlist" name="type" value="playlist">
+                        <label for="type-playlist" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            Playlist (zip)
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn" class="submit-button">
-                    <span class="button-text">Start Download</span>
-                    <span class="loading-spinner"></span>
+                <button type="submit" id="submit-btn" class="submit">
+                    <span class="submit-content">
+                        <span class="submit-text">Download MP3</span>
+                        <svg class="submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+                    </span>
+                    <span class="spinner" aria-hidden="true"></span>
                 </button>
             </form>
 
-            <div id="status-bar" class="status-bar hidden">
-                <div id="status-message"></div>
-            </div>
-
-            <section id="download-progress-container" class="progress-container hidden">
-                <div class="progress-header">
-                    <span id="progress-icon" class="progress-icon">🎧</span>
-                    <span id="progress-text" class="progress-text">Initializing Download...</span>
+            <section id="progress" class="progress hidden" aria-live="polite">
+                <div class="progress-head">
+                    <div class="progress-spinner" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="progress-info">
+                        <div id="progress-stage" class="progress-stage">Starting up...</div>
+                        <div id="progress-detail" class="progress-detail">&nbsp;</div>
+                    </div>
+                    <div id="progress-pct" class="progress-pct">0%</div>
                 </div>
-                <div class="progress-bar-bg">
-                    <div id="progress-bar" class="progress-bar"></div>
+                <div class="bar"><div id="progress-bar" class="bar-fill"></div></div>
+
+                <ul id="track-list" class="track-list"></ul>
+
+                <div id="result" class="result hidden">
+                    <a id="result-link" class="result-link" href="#" download>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span id="result-text">Download ready</span>
+                    </a>
                 </div>
             </section>
-        </div>
-    </div>
+        </section>
+
+        <section class="features">
+            <article class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                </div>
+                <h3>High Quality Audio</h3>
+                <p>192 kbps MP3, transcoded with FFmpeg from the best available source.</p>
+            </article>
+            <article class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                </div>
+                <h3>Real Metadata</h3>
+                <p>We look up the track on iTunes so title, artist, album, year, genre, and cover art are all correct.</p>
+            </article>
+            <article class="feature">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <h3>Embedded Cover Art</h3>
+                <p>600x600 album art is downloaded from iTunes and embedded directly into the file.</p>
+            </article>
+        </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="/static/script.js"></script>
 </body>

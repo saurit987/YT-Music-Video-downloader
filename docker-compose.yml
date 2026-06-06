@@ -1,0 +1,14 @@
+services:
+  yt-music-downloader:
+    build: .
+    image: yt-music-downloader:latest
+    container_name: yt-music-downloader
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    # /tmp is mounted as tmpfs (RAM) so transient download artifacts never
+    # touch the host disk. 256M is plenty for a single 192-kbps MP3.
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    environment:
+      - TZ=UTC

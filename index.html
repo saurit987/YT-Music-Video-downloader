@@ -41,7 +41,7 @@
         <section class="hero">
             <span class="eyebrow">Fast &middot; Tagged &middot; Lossless Cover Art</span>
             <h1 class="hero-title">Save any track as a <span class="grad-text">perfectly tagged</span> MP3.</h1>
-            <p class="hero-sub">Paste a YouTube link and we'll fetch the audio, pull the real title, artist, album, year and genre from iTunes, embed a 600x600 cover, and hand you back a clean MP3.</p>
+            <p class="hero-sub">Paste a YouTube link and we'll fetch the audio, pull the real title, artist, album, year and genre from iTunes, embed a high-res cover, and hand you back a clean MP3 — choose Standard or Hi-Res quality.</p>
         </section>
 
         <section class="card glass" id="card">
@@ -71,9 +71,59 @@
                     </div>
                 </div>
 
+                <div class="field">
+                    <span class="label">Format</span>
+                    <div class="segmented" role="tablist">
+                        <input type="radio" id="format-audio" name="format" value="audio" checked>
+                        <label for="format-audio" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            Audio
+                        </label>
+                        <input type="radio" id="format-video" name="format" value="video">
+                        <label for="format-video" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            Video
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field" id="audio-quality-section">
+                    <span class="label">Audio Quality</span>
+                    <div class="segmented" role="tablist">
+                        <input type="radio" id="quality-standard" name="quality" value="standard" checked>
+                        <label for="quality-standard" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            Standard MP3 (192kbps)
+                        </label>
+                        <input type="radio" id="quality-hires" name="quality" value="hires">
+                        <label for="quality-hires" class="seg-option">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                            Hi-Res (FLAC + best source)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field hidden" id="video-quality-section">
+                    <span class="label">Video Quality</span>
+                    <div class="segmented" role="tablist">
+                        <input type="radio" id="vq-best" name="video_quality" value="best">
+                        <label for="vq-best" class="seg-option">Best</label>
+                        <input type="radio" id="vq-2160" name="video_quality" value="2160">
+                        <label for="vq-2160" class="seg-option">4K</label>
+                        <input type="radio" id="vq-1080" name="video_quality" value="1080" checked>
+                        <label for="vq-1080" class="seg-option">1080p</label>
+                        <input type="radio" id="vq-720" name="video_quality" value="720">
+                        <label for="vq-720" class="seg-option">720p</label>
+                        <input type="radio" id="vq-480" name="video_quality" value="480">
+                        <label for="vq-480" class="seg-option">480p</label>
+                        <input type="radio" id="vq-360" name="video_quality" value="360">
+                        <label for="vq-360" class="seg-option">360p</label>
+                    </div>
+                </div>
+
                 <button type="submit" id="submit-btn" class="submit">
                     <span class="submit-content">
-                        <span class="submit-text">Download MP3</span>
+                        <span class="submit-text">Download</span>
                         <svg class="submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
                     </span>
                     <span class="spinner" aria-hidden="true"></span>
@@ -110,7 +160,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
                 </div>
                 <h3>High Quality Audio</h3>
-                <p>192 kbps MP3, transcoded with FFmpeg from the best available source.</p>
+                <p>Choose Standard (192kbps MP3) or Hi-Res (lossless FLAC + best source search) — transcoded with FFmpeg.</p>
             </article>
             <article class="feature">
                 <div class="feature-icon">
@@ -124,7 +174,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
                 <h3>Embedded Cover Art</h3>
-                <p>600x600 album art is downloaded from iTunes and embedded directly into the file.</p>
+                <p>Up to 1200x1200 album art is downloaded from iTunes and embedded directly into the file (Hi-Res gets larger art).</p>
             </article>
         </section>
     </main>

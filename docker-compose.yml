@@ -7,8 +7,8 @@ services:
     ports:
       - "8000:8000"
     # /tmp is mounted as tmpfs (RAM) so transient download artifacts never
-    # touch the host disk. 256M is plenty for a single 192-kbps MP3.
+    # touch the host disk. 1G supports large video files.
     tmpfs:
-      - /tmp:size=256m,mode=1777
+      - /tmp:size=1g,mode=1777
     environment:
       - TZ=UTC

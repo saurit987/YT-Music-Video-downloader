@@ -70,6 +70,9 @@ body {
     font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
     background: var(--c-bg);
     color: var(--c-text);
+}
+
+.hidden { display: none !important; }
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;

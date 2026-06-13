@@ -137,6 +137,9 @@
                 if (msg.stage === "starting") {
                     progressStage.textContent = "Connecting to YouTube...";
                     barFill.classList.add("indeterminate");
+                } else if (msg.stage === "searching_hires") {
+                    progressStage.textContent = msg.message || "Searching for best quality source...";
+                    barFill.classList.add("indeterminate");
                 } else if (msg.stage === "tagging") {
                     progressStage.textContent =
                         `Enriching metadata for ${msg.total || 0} track${msg.total === 1 ? "" : "s"}`;
@@ -158,12 +161,13 @@
                 const det = [fmtSpeed(msg.speed), fmtEta(msg.eta)]
                     .filter(Boolean).join(" · ");
                 progressStage.textContent = msg.filename
-                    ? `Downloading ${msg.filename}` : "Downloading audio...";
+                    ? `Downloading ${msg.filename}` : "Downloading...";
                 progressDetail.textContent = det || (msg.filename || "");
                 break;
             }
             case "postprocess": {
-                progressStage.textContent = "Converting to MP3...";
+                const isVideoPost = document.getElementById("format-video").checked;
+                progressStage.textContent = isVideoPost ? "Merging audio & video..." : "Converting to MP3...";
                 barFill.classList.remove("indeterminate");
                 barFill.style.width = "92%";
                 progressPct.textContent = "92%";
@@ -229,6 +233,11 @@
                 );
                 break;
             }
+            case "hires_found": {
+                progressStage.textContent = "Found better quality source";
+                progressDetail.textContent = msg.source || "";
+                break;
+            }
             case "error": {
                 progressStage.textContent = "Something went wrong";
                 progressDetail.textContent = msg.message || "";
@@ -249,6 +258,19 @@
         activeJobId = null;
         setLoading(false);
     }
+
+    // ------------------------------------------------------------
+    // Format toggle
+    // ------------------------------------------------------------
+    const audioQualitySection = document.getElementById("audio-quality-section");
+    const videoQualitySection = document.getElementById("video-quality-section");
+    document.querySelectorAll('input[name="format"]').forEach((radio) => {
+        radio.addEventListener("change", () => {
+            const isVideo = document.getElementById("format-video").checked;
+            audioQualitySection.classList.toggle("hidden", isVideo);
+            videoQualitySection.classList.toggle("hidden", !isVideo);
+        });
+    });
 
     // ------------------------------------------------------------
     // Form submission
